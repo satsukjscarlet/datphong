@@ -96,7 +96,7 @@ function print_header_site_info()
     echo "</div>\n";
   }
 
-  // Company name, any extra company info and MRBS
+  // Tên công ty, bất kỳ thông tin bổ sung nào của công ty và MRBS
   echo "<div class=\"company\">\n";
   if (!empty($mrbs_company_url))
   {
@@ -113,6 +113,7 @@ function print_header_site_info()
     // trusted and allowed to contain HTML.
     echo "<span class=\"company_more_info\">$mrbs_company_more_info</span>\n";
   }
+  //Tuan
   echo '<a href="' . htmlspecialchars(multisite('index.php')) . '">' . get_vocab('mrbs') . "</a>\n";
   echo "</div>\n";
 }
@@ -124,7 +125,7 @@ function print_goto_date($context)
 
   if (!checkAuthorised('index.php', true))
   {
-    // Don't show the goto box if the user isn't allowed to view the calendar
+    // Không hiển thị hộp goto nếu người dùng không được phép xem lịch
     return;
   }
 
@@ -203,8 +204,10 @@ function print_outstanding($query)
 function print_menu_items($query)
 {
   global $auth;
-
+  //Thêm danh mục đầu trang
   $menu_items = array(
+    'Trang chủ' => 'index.php',
+    'Đặt phòng đặc biệt' => 'edit_entry.php',
     //		'help'   => 'help.php',
 					  'report' => 'report.php',
     //		'import' => 'import.php',
