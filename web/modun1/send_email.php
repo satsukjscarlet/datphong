@@ -5,7 +5,7 @@ function GuiMail($email_receive,$name_reveive){
     require 'PHPMailer-master/src/Exception.php'; 
     $mail = new PHPMailer\PHPMailer\PHPMailer(true);//true:enables exceptions
     try {
-        $mail->SMTPDebug = 2; //0,1,2: chế độ debug. khi chạy ngon thì chỉnh lại 0 nhé
+        $mail->SMTPDebug = 0; //0,1,2: chế độ debug. khi chạy ngon thì chỉnh lại 0 nhé
         $mail->isSMTP();  
         $mail->CharSet  = "utf-8";
         $mail->Host = 'smtp.gmail.com';  //SMTP servers
@@ -34,12 +34,11 @@ function GuiMail($email_receive,$name_reveive){
         ));
         $mail->send();
         echo 'Đã gửi mail xong';
+   
     } catch (Exception $e) {
         echo 'Mail không gửi được. Lỗi: ', $mail->ErrorInfo;
     }
+    header('Location: http://localhost/datphong/web/');
  }//function GuiMail
  ?>
 
- <?php
- GuiMail('thientuanplc@gmail.com', 'tuan');
- ?>

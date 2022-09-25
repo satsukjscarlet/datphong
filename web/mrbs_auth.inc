@@ -114,6 +114,7 @@ function get_page_level($page)
     // break into the system, so users are required to be logged in before viewing them.
     case 'search.php':
     case 'view_entry.php':
+    case 'book_special.php';
       $result = 1;
       break;
 

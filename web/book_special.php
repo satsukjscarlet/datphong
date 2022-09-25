@@ -74,9 +74,9 @@ use MRBS\Form\FieldSelect;
 // then it will use the fieldname, eg 'coffee_machine'.
 
 
-require '../defaultincludes.inc';
-require_once '../mrbs_sql.inc';
-require_once '../functions_mail.inc';
+require 'defaultincludes.inc';
+require_once 'mrbs_sql.inc';
+require_once 'functions_mail.inc';
 
 $fields = db()->field_info(_tbl('entry'));
 $custom_fields = array();
@@ -1574,89 +1574,89 @@ $context = array(
 print_header($context);
 
 // Get the details of all the enabled rooms
-$rooms = array();
-$sql = "SELECT R.id, R.room_name, R.area_id
-          FROM " . _tbl('room') . " R, " . _tbl('area') . " A
-         WHERE R.area_id = A.id
-           AND R.disabled=0
-           AND A.disabled=0
-      ORDER BY R.area_id, R.sort_key";
-$res = db()->query($sql);
+// $rooms = array();
+// $sql = "SELECT R.id, R.room_name, R.area_id
+//           FROM " . _tbl('room') . " R, " . _tbl('area') . " A
+//          WHERE R.area_id = A.id
+//            AND R.disabled=0
+//            AND A.disabled=0
+//       ORDER BY R.area_id, R.sort_key";
+// $res = db()->query($sql);
 
-while (false !== ($row = $res->next_row_keyed()))
-{
-  // Only use rooms which are visible and for which the user has write access
-  if (getWritable($create_by, $row['id']) && is_visible($row['id']))
-  {
-    $rooms[$row['area_id']][$row['id']] = $row['room_name'];
-  }
-}
+// while (false !== ($row = $res->next_row_keyed()))
+// {
+//   // Only use rooms which are visible and for which the user has write access
+//   if (getWritable($create_by, $row['id']) && is_visible($row['id']))
+//   {
+//     $rooms[$row['area_id']][$row['id']] = $row['room_name'];
+//   }
+// }
 
-// Get the details of all the enabled areas
-$areas = array();
-$sql = "SELECT id, area_name, resolution, default_duration, default_duration_all_day,
-               enable_periods, periods, timezone,
-               morningstarts, morningstarts_minutes, eveningends , eveningends_minutes,
-               max_duration_enabled, max_duration_secs, max_duration_periods
-          FROM " . _tbl('area') . "
-         WHERE disabled=0
-      ORDER BY sort_key";
-$res = db()->query($sql);
+// // Get the details of all the enabled areas
+// $areas = array();
+// $sql = "SELECT id, area_name, resolution, default_duration, default_duration_all_day,
+//                enable_periods, periods, timezone,
+//                morningstarts, morningstarts_minutes, eveningends , eveningends_minutes,
+//                max_duration_enabled, max_duration_secs, max_duration_periods
+//           FROM " . _tbl('area') . "
+//          WHERE disabled=0
+//       ORDER BY sort_key";
+// $res = db()->query($sql);
 
-while (false !== ($row = $res->next_row_keyed()))
-{
-  // We don't want areas that have no enabled rooms because it doesn't make sense
-  // to try and select them for a booking.
-  if (empty($rooms[$row['id']]))
-  {
-    continue;
-  }
+// while (false !== ($row = $res->next_row_keyed()))
+// {
+//   // We don't want areas that have no enabled rooms because it doesn't make sense
+//   // to try and select them for a booking.
+//   if (empty($rooms[$row['id']]))
+//   {
+//     continue;
+//   }
 
-  // Periods are JSON encoded in the database
-  $row['periods'] = json_decode($row['periods']);
+//   // Periods are JSON encoded in the database
+//   $row['periods'] = json_decode($row['periods']);
 
-  // Make sure we've got the correct resolution when using periods (it's
-  // probably OK anyway, but just in case)
-  if ($row['enable_periods'])
-  {
-    $row['resolution'] = 60;
-  }
-  // Generate some derived settings
-  $row['max_duration_qty']     = $row['max_duration_secs'];
-  toTimeString($row['max_duration_qty'], $row['max_duration_units']);
-  // Get the start and end of the booking day
-  if ($row['enable_periods'])
-  {
-    $first = 12*SECONDS_PER_HOUR;
-    // If we're using periods we just go to the end of the last slot
-    $last = $first + (count($row['periods']) * $row['resolution']);
-  }
-  else
-  {
-    $first = (($row['morningstarts'] * 60) + $row['morningstarts_minutes']) * 60;
-    $last = ((($row['eveningends'] * 60) + $row['eveningends_minutes']) * 60) + $row['resolution'];
-    // If the end of the day is the same as or before the start time, then it's really on the next day
-    if ($first >= $last)
-    {
-      $last += SECONDS_PER_DAY;
-    }
-  }
-  $row['first'] = $first;
-  $row['last'] = $last;
-  // We don't show the all day checkbox if it's going to result in bookings that
-  // contravene the policy - ie if max_duration is enabled and an all day booking
-  // would be longer than the maximum duration allowed.
-  $row['show_all_day'] = is_book_admin() ||
-                         !$row['max_duration_enabled'] ||
-                         ( ($row['enable_periods'] && ($row['max_duration_periods'] >= count($row['periods']))) ||
-                           (!$row['enable_periods'] && ($row['max_duration_secs'] >= ($last - $first))) );
+//   // Make sure we've got the correct resolution when using periods (it's
+//   // probably OK anyway, but just in case)
+//   if ($row['enable_periods'])
+//   {
+//     $row['resolution'] = 60;
+//   }
+//   // Generate some derived settings
+//   $row['max_duration_qty']     = $row['max_duration_secs'];
+//   toTimeString($row['max_duration_qty'], $row['max_duration_units']);
+//   // Get the start and end of the booking day
+//   if ($row['enable_periods'])
+//   {
+//     $first = 12*SECONDS_PER_HOUR;
+//     // If we're using periods we just go to the end of the last slot
+//     $last = $first + (count($row['periods']) * $row['resolution']);
+//   }
+//   else
+//   {
+//     $first = (($row['morningstarts'] * 60) + $row['morningstarts_minutes']) * 60;
+//     $last = ((($row['eveningends'] * 60) + $row['eveningends_minutes']) * 60) + $row['resolution'];
+//     // If the end of the day is the same as or before the start time, then it's really on the next day
+//     if ($first >= $last)
+//     {
+//       $last += SECONDS_PER_DAY;
+//     }
+//   }
+//   $row['first'] = $first;
+//   $row['last'] = $last;
+//   // We don't show the all day checkbox if it's going to result in bookings that
+//   // contravene the policy - ie if max_duration is enabled and an all day booking
+//   // would be longer than the maximum duration allowed.
+//   $row['show_all_day'] = is_book_admin() ||
+//                          !$row['max_duration_enabled'] ||
+//                          ( ($row['enable_periods'] && ($row['max_duration_periods'] >= count($row['periods']))) ||
+//                            (!$row['enable_periods'] && ($row['max_duration_secs'] >= ($last - $first))) );
 
-  // Clean up the settings, getting rid of any nulls and casting boolean fields into bools
-  $row = clean_area_row($row);
+//   // Clean up the settings, getting rid of any nulls and casting boolean fields into bools
+//   $row = clean_area_row($row);
 
-  // Now assign the row to the area
-  $areas[$row['id']] = $row;
-}
+//   // Now assign the row to the area
+//   $areas[$row['id']] = $row;
+// }
 
 // Check that the area for this room actually exists.  This will happen if the room id in the query
 // string is invalid, usually as a result of using an out of date bookmark.
@@ -1669,144 +1669,144 @@ while (false !== ($row = $res->next_row_keyed()))
 //   print_footer(true);
 // }
 
-if (isset($id) && !isset($copy))
-{
-  if ($edit_type == "series")
-  {
-    $token = "editseries";
-  }
-  else
-  {
-    $token = "editentry";
-  }
-}
-else
-{
-  if (isset($copy))
-  {
-    if ($edit_type == "series")
-    {
-      $token = "copyseries";
-    }
-    else
-    {
-      $token = "copyentry";
-    }
-  }
-  else
-  {
-    $token = "addentry";
-  }
-}
+// if (isset($id) && !isset($copy))
+// {
+//   if ($edit_type == "series")
+//   {
+//     $token = "editseries";
+//   }
+//   else
+//   {
+//     $token = "editentry";
+//   }
+// }
+// else
+// {
+//   if (isset($copy))
+//   {
+//     if ($edit_type == "series")
+//     {
+//       $token = "copyseries";
+//     }
+//     else
+//     {
+//       $token = "copyentry";
+//     }
+//   }
+//   else
+//   {
+//     $token = "addentry";
+//   }
+// }
 
 
-$form = new Form();
+// $form = new Form();
 
-$form->setAttributes(array('class'  => 'standard js_hidden',
-                           'id'     => 'main',
-                           'action' => multisite('edit_entry_handler.php'),
-                           'method' => 'post'));
+// $form->setAttributes(array('class'  => 'standard js_hidden',
+//                            'id'     => 'main',
+//                            'action' => multisite('edit_entry_handler.php'),
+//                            'method' => 'post'));
 
-if (!empty($back_button))
-{
-  // Add a data attribute so that the JavaScript can tell where we've come from
-  $form->setAttribute('data-back', 1);
-}
+// if (!empty($back_button))
+// {
+//   // Add a data attribute so that the JavaScript can tell where we've come from
+//   $form->setAttribute('data-back', 1);
+// }
 
-$hidden_inputs = array('returl'    => $returl,
-                       'rep_id'    => $rep_id,
-                       'edit_type' => $edit_type);
+// $hidden_inputs = array('returl'    => $returl,
+//                        'rep_id'    => $rep_id,
+//                        'edit_type' => $edit_type);
 
-$form->addHiddenInputs($hidden_inputs);
+// $form->addHiddenInputs($hidden_inputs);
 
-// The original_room_id will only be set if this was an existing booking.
-// If it is an existing booking then edit_entry_handler needs to know the
-// original room id and the ical_uid and the ical_sequence, because it will
-// have to keep the ical_uid and increment the ical_sequence for the room that
-// contained the original booking.  If it's a new booking it will generate a new
-// ical_uid and start the ical_sequence at 0.
-if (isset($original_room_id))
-{
-  $form->addHiddenInputs(array('original_room_id' => $original_room_id,
-                               'ical_uid'         => $ical_uid,
-                               'ical_sequence'    => $ical_sequence,
-                               'ical_recur_id'    => $ical_recur_id));
-}
+// // The original_room_id will only be set if this was an existing booking.
+// // If it is an existing booking then edit_entry_handler needs to know the
+// // original room id and the ical_uid and the ical_sequence, because it will
+// // have to keep the ical_uid and increment the ical_sequence for the room that
+// // contained the original booking.  If it's a new booking it will generate a new
+// // ical_uid and start the ical_sequence at 0.
+// if (isset($original_room_id))
+// {
+//   $form->addHiddenInputs(array('original_room_id' => $original_room_id,
+//                                'ical_uid'         => $ical_uid,
+//                                'ical_sequence'    => $ical_sequence,
+//                                'ical_recur_id'    => $ical_recur_id));
+// }
 
-if(isset($id) && !isset($copy))
-{
-  $form->addHiddenInput('id', $id);
-}
+// if(isset($id) && !isset($copy))
+// {
+//   $form->addHiddenInput('id', $id);
+// }
 
-$fieldset = new ElementFieldset();
-$fieldset->addLegend(get_vocab($token));
+// $fieldset = new ElementFieldset();
+// $fieldset->addLegend(get_vocab($token));
 
-foreach ($edit_entry_field_order as $key)
-{
-  switch ($key)
-  {
-    case 'create_by':
-      // Add in the create_by hidden input, unless the user is a booking admin
-      // and we're allowing admins to make bookings on behalf of other users, in
-      // which case we'll have an explicit form field to specify the user.
-      if (!is_book_admin() || $auth['admin_can_only_book_for_self'])
-      {
-        $form->addHiddenInput('create_by', $create_by);
-      }
-      else
-      {
-        $fieldset->addElement(get_field_create_by($create_by));
-      }
-      break;
+// foreach ($edit_entry_field_order as $key)
+// {
+//   switch ($key)
+//   {
+//     case 'create_by':
+//       // Add in the create_by hidden input, unless the user is a booking admin
+//       // and we're allowing admins to make bookings on behalf of other users, in
+//       // which case we'll have an explicit form field to specify the user.
+//       if (!is_book_admin() || $auth['admin_can_only_book_for_self'])
+//       {
+//         $form->addHiddenInput('create_by', $create_by);
+//       }
+//       else
+//       {
+//         $fieldset->addElement(get_field_create_by($create_by));
+//       }
+//       break;
 
-    case 'name':
-      $fieldset->addElement(get_field_name($name));
-      break;
+//     case 'name':
+//       $fieldset->addElement(get_field_name($name));
+//       break;
 
-    case 'description':
-      $fieldset->addElement(get_field_description($description));
-      break;
+//     case 'description':
+//       $fieldset->addElement(get_field_description($description));
+//       break;
 
-    case 'start_time':
-      $fieldset->addElement(get_field_start_time($start_time));
-      break;
+//     case 'start_time':
+//       $fieldset->addElement(get_field_start_time($start_time));
+//       break;
 
-    case 'end_time':
-      $fieldset->addElement(get_field_end_time($end_time));
-      break;
+//     case 'end_time':
+//       $fieldset->addElement(get_field_end_time($end_time));
+//       break;
 
-    case 'room_id':
-      $fieldset->addElement(get_field_areas($area_id));
-      // $selected_rooms will be populated if we've come from a drag selection
-      if (empty($selected_rooms))
-      {
-        $selected_rooms = array($room_id);
-      }
-      $fieldset->addElement(get_field_rooms($selected_rooms));
-      break;
+//     case 'room_id':
+//       $fieldset->addElement(get_field_areas($area_id));
+//       // $selected_rooms will be populated if we've come from a drag selection
+//       if (empty($selected_rooms))
+//       {
+//         $selected_rooms = array($room_id);
+//       }
+//       $fieldset->addElement(get_field_rooms($selected_rooms));
+//       break;
 
-    case 'type':
-      $fieldset->addElement(get_field_type($type));
-      break;
+//     case 'type':
+//       $fieldset->addElement(get_field_type($type));
+//       break;
 
-    case 'confirmation_status':
-      $fieldset->addElement(get_field_confirmation_status($tentative));
-      break;
+//     case 'confirmation_status':
+//       $fieldset->addElement(get_field_confirmation_status($tentative));
+//       break;
 
-    case 'privacy_status':
-      $fieldset->addElement(get_field_privacy_status($private));
-      break;
+//     case 'privacy_status':
+//       $fieldset->addElement(get_field_privacy_status($private));
+//       break;
 
-    default:
-      $fieldset->addElement(get_field_custom($key));
-      break;
+//     default:
+//       $fieldset->addElement(get_field_custom($key));
+//       break;
 
-  } // switch
-} // foreach
+//   } // switch
+// } // foreach
 
-$form->addElement($fieldset);
+// $form->addElement($fieldset);
 
-$form->addElement(get_fieldset_registration());
+// $form->addElement(get_fieldset_registration());
 
 // Show the repeat fields if (a) it's a new booking and repeats are allowed,
 // or else if it's an existing booking and it's a series.  (It's not particularly obvious but
@@ -1830,19 +1830,29 @@ $form->addElement(get_fieldset_registration());
 
 
 // print_footer();
+// echo $mrbs_user->username;
+
 ?>
 
 <?php
-require 'connect.php';
+require 'modun1/connect.php';
 ?>
-
-
-<form class="container" action='reg.php' method="POST">
+<html>
+<form  action='modun1/reg.php' method="POST" display= "block">
   <fieldset>
     <div id="legend">
       <legend class="">Đặt Phòng đặc biệt</legend>
     </div>
     <div>
+       <!-- Người đặt phòng -->
+       <div class = "container">
+        <label class="control-label" for="name">Người đặt phòng</label>
+        <div class="controls">
+          <input type="text" id="name" name="name" required pattern="\s*\S+.*" value= "<?php echo $mrbs_user->display_name ?>" maxlength="80" disabled>
+          <input type="hidden" id="create_by" name="create_by" value="<?php echo $mrbs_user->username ?>">
+          <input type="hidden" id="email" name="email" value="<?php echo $mrbs_user->email ?>">
+        </div>
+      </div>
       <!-- Tiêu đề cuộc họp -->
       <div>
         <label class="control-label" for="name">Tiêu đề cuộc họp</label>
@@ -1861,7 +1871,7 @@ require 'connect.php';
       <div>
         <label class="control-label">Ngày đăng ký</label>
         <div class="controls">
-          <input type="date" id="start_date" name="start_date" value="2022-09-21" required>
+          <input type="date" id="start_date" name="start_date" value="<?php echo date("Y-m-d H:i:s") ?>" required>
         </div>
       </div>
       <!-- Bắt đầu -->
@@ -1992,3 +2002,4 @@ require 'connect.php';
     </div>
   </fieldset>
 </form>
+</html>
