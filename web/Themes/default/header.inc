@@ -207,7 +207,7 @@ function print_menu_items($query)
   //Thêm danh mục đầu trang
   $menu_items = array(
     'Trang chủ' => 'index.php',
-    'Đặt phòng đặc biệt' => 'book_special.php',
+    'Đặt Phòng Ưu Tiên' => 'book_special.php',
     //		'help'   => 'help.php',
 					  'report' => 'report.php',
     //		'import' => 'import.php',

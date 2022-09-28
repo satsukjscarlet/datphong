@@ -1,5 +1,5 @@
 <?php
-function GuiMail($email_receive,$name_reveive){   
+function GuiMail($email_receive,$name_reveive, $noidungthu){   
     require "PHPMailer-master/src/PHPMailer.php"; 
     require "PHPMailer-master/src/SMTP.php"; 
     require 'PHPMailer-master/src/Exception.php'; 
@@ -14,16 +14,16 @@ function GuiMail($email_receive,$name_reveive){
         $mail->Password = 'fndqcijmvpzwhpbn';   // SMTP password
         $mail->SMTPSecure = 'ssl';  // encryption TLS/SSL 
         $mail->Port = 465;  // port to connect to                
-        $mail->setFrom('thientuantest@gmail.com', 'Hệ thống đặt phòng họp - Đặt phòng đặc biệt' ); 
+        $mail->setFrom('thientuantest@gmail.com', 'Hệ thống đặt phòng họp - Đặt phòng ưu tiên' ); 
         $mail->addAddress($email_receive, $name_reveive); //mail và tên người nhận
         $mail->addCC('thientuantest@gmail.com', 'admin' ); 
         $mail->isHTML(true);  // Set email format to HTML
-        $mail->Subject = 'Đặt Phòng họp đặc biệt';
-        $noidungthu = file_get_contents("Test.txt");
-        $noidungthu = str_replace(
-            [ '{name_receive}'], 
-            [$name_reveive]
-            , $noidungthu);
+        $mail->Subject = 'Đặt Phòng họp ưu tiên';
+        // $noidungthu = file_get_contents("Test.txt");
+        // $noidungthu = str_replace(
+        //     [ '{name_receive}'], 
+        //     [$name_reveive]
+        //     , $noidungthu);
         $mail->Body = $noidungthu;
         $mail->smtpConnect( array(
             "ssl" => array(
@@ -38,6 +38,7 @@ function GuiMail($email_receive,$name_reveive){
     } catch (Exception $e) {
         echo 'Mail không gửi được. Lỗi: ', $mail->ErrorInfo;
     }
+    // header('Location: http://10.2.2.11/datphong/web/');
     header('Location: http://localhost/datphong/web/');
  }//function GuiMail
  ?>

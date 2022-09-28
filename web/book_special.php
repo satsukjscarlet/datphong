@@ -1837,6 +1837,7 @@ print_header($context);
 <?php
 require 'modun1/connect.php';
 ?>
+
 <html>
 <form  action='modun1/reg.php' method="POST" display= "block">
   <fieldset>
@@ -1850,6 +1851,7 @@ require 'modun1/connect.php';
         <div class="controls">
           <input type="text" id="name" name="name" required pattern="\s*\S+.*" value= "<?php echo $mrbs_user->display_name ?>" maxlength="80" disabled>
           <input type="hidden" id="create_by" name="create_by" value="<?php echo $mrbs_user->username ?>">
+          <input type="hidden" id="display_name" name="display_name" value="<?php echo $mrbs_user->display_name?>">
           <input type="hidden" id="email" name="email" value="<?php echo $mrbs_user->email ?>">
         </div>
       </div>
@@ -1996,10 +1998,23 @@ require 'modun1/connect.php';
       <!-- Kiểu -->
       <!-- Button -->
       <div>
-        <input type="submit" class="default_action" name="save_button" value="Lưu lại">
+        <input type="submit" class="default_action" name="save_button" value="Lưu lại" onclick = "check()">
       </div>
       <!-- Kiểu -->
     </div>
   </fieldset>
 </form>
 </html>
+
+<!-- <script>
+  funtion check(){
+    var loi = "";
+    //Kiem tra gio sau lon hon gio truoc
+    var start_t = document.getElementById("start_seconds");
+    var end_t = document.getElementById("end_seconds");
+    if(start_t.value >= end_t.value){
+      alert("please fill all fields");
+      return false;
+    }
+  }
+</script> -->

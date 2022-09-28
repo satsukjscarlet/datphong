@@ -36,11 +36,14 @@ if (isset($_POST['save_button'])) {
     if (isset($_POST['create_by'])) {
         $create_by = $_POST['create_by'];
     }
+    if (isset($_POST['display_name'])) {
+        $display_name = $_POST['display_name'];
+    }
     if (isset($_POST['email'])) {
         $email = $_POST['email'];
     }
     if (isset($_POST['name'])) {
-        $name = $_POST['name'];
+        $name = '[UT]'.$_POST['name'];
     }
     if (isset($_POST['description'])) {
         $description = $_POST['description'];
@@ -203,15 +206,32 @@ if (isset($_POST['save_button'])) {
 '$create_by', '', '$name', '$type', '$description', '$status', NULL, NULL, NULL, NULL, '', '0', NULL, '0', '0', '0', '1209600', '0', '0', '0')";
 if($conn->query($sql) == true){
     echo "Tạo cuộc họp đặc biệt thành công";
-    GuiMail($email, $create_by);
-    header('Location: http://localhost/datphong/web/');
+    //email
+    $kieu = "Bên ngoài";
+    if($type == "I"){
+        $kieu = "Nội bộ";
+    }
+    $giohop = ($e_hours*60 + $e_minutes) -($s_hours*60 +$e_minutes);
+    $noidungthu = file_get_contents("mail_temp.txt");
+    $noidungthu = str_replace(
+        [ '{name_receive}', '{tieu_de}','{phong}','{ngayhop}','{thoigianbatdau}','{thoihan}','{thoigiankt}','{kieu}'],
+        [$display_name, $name, $room, 
+        $start_date,
+        $s_hours.' giờ '.$s_minutes.' phút',
+        $giohop.' phút',                 
+        $e_hours.' giờ '.$e_minutes.' phút',
+        $kieu],
+        $noidungthu);
+
+
+    GuiMail($email, $create_by, $noidungthu);
 }
 else{
     echo "Lỗi $sql" .$conn->error;
 }
     } else {
         echo 'Bạn chưa điền đủ thông tin';
-        // header('Location: http://localhost/datphong/web/');
+        // header('Location: http://10.2.2.11/datphong/web/');
     }
 }
 

@@ -1,0 +1,47 @@
+
+
+
+<H1 style="background-color:Orange;">Công ty CP Nhựa Thiếu Niên Tiền Phong - Hệ thống đặt phòng họp</H1>
+
+<p>Một đơn đặt phòng ưu tiên mới cần được duyệt đã được đặt bởi {name_receive}: đây là chi tiết</p>
+<a href="http://localhost/datphong/web" target="_blank">Chờ duyệt</a>
+<table>
+<tbody>
+<tr>
+<td>Loại cuộc họp: </td>
+<td>Ưu tiên</td>
+</tr>
+<tr>
+<td>Tiêu đề cuộc họp: </td>
+<td>{tieu_de}</td>
+</tr>
+<tr>
+<td>Tình trạng duyệt: </td>
+<td>Đang chờ duyệt</td>
+</tr>
+<tr>
+<td>Phòng: </td>
+<td>{phong}</td>
+</tr>
+<tr>
+<td>Ngày họp: </td>
+<td>{ngayhop}</td>
+</tr>
+<tr>
+<tr>
+<td>Thời gian bắt đầu: </td>
+<td>{thoigianbatdau}</td>
+</tr>
+<tr>
+<td>Thời hạn: </td>
+<td>{thoihan}</td>
+</tr>
+<tr>
+<td>Thời gian kết thúc: </td>
+<td>{thoigiankt}</td>
+</tr>
+<tr>
+<td>Kiểu: </td>
+<td>{kieu}</td>
+</tr>
+</tbody>

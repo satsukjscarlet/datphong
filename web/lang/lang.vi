@@ -65,7 +65,7 @@ $vocab["editentry"]          = "Chỉnh sửa đơn đặt phòng";
 $vocab["copyentry"]          = "Sao chép đơn đặt phòng";
 $vocab["editseries"]         = "Chỉnh sửa bộ";
 $vocab["copyseries"]         = "Sao chép bộ";
-$vocab["namebooker"]         = "Tiêu đề cuộc họp";
+$vocab["namebooker"]         = "Tên người đặt phòng";
 $vocab["fulldescription"]    = "Yêu cầu thêm";
 $vocab["date"]               = "Ngày";
 $vocab["start"]              = "Bắt đầu";
@@ -153,7 +153,7 @@ $vocab["edit_entry_nonexistent_room"] = "Bạn đang cố tạo hoặc chỉnh s
 $vocab["home"]                        = "Trang chủ";
 
 // Used in view_entry.php
-$vocab["description"]             = "Tiêu đề cuộc họp";
+$vocab["description"]             = "Thông tin thêm";
 $vocab["room"]                    = "Phòng";
 $vocab["createdby"]               = "Tạo bởi";
 $vocab["modifiedby"]              = "Thay đổi bởi";
