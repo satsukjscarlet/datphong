@@ -1837,9 +1837,37 @@ print_header($context);
 <?php
 require 'modun1/connect.php';
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
-<html>
-<form  action='modun1/reg.php' method="POST" display= "block">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <script language="javascript">
+    function validateForm() {
+      var start_time = document.getElementById('start_seconds').value;
+      var end_time = document.getElementById('end_seconds').value;
+      var start_day = document.getElementById('start_date').value;
+
+      if (new Date(start_day).getDate() < new Date().getDate()) {
+        alert("Ngày bắt đầu cuộc họp không được nhỏ hơn ngày hiện tại");
+        return false;
+      }
+      
+      if (start_time >= end_time) {
+        alert("Giờ kết thúc cuộc họp không được nhỏ hơn giờ bắt đầu ");
+        return false;
+      }
+      alert("Bạn đã tạo phòng họp ưu tiên thành công, hãy chờ quản trị viên xác nhận");
+      return true;
+    }
+  </script>
+<form class="container" action='modun1/reg.php' method="POST" display= "block" onsubmit="return validateForm()">
   <fieldset>
     <div id="legend">
       <legend class="">Đặt Phòng đặc biệt</legend>
@@ -2005,16 +2033,6 @@ require 'modun1/connect.php';
   </fieldset>
 </form>
 </html>
+</body>
 
-<!-- <script>
-  funtion check(){
-    var loi = "";
-    //Kiem tra gio sau lon hon gio truoc
-    var start_t = document.getElementById("start_seconds");
-    var end_t = document.getElementById("end_seconds");
-    if(start_t.value >= end_t.value){
-      alert("please fill all fields");
-      return false;
-    }
-  }
-</script> -->
+</html>
